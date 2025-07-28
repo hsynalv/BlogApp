@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card bg-dark text-white shadow-lg p-4" style="min-width: 400px;">
+        <h3 class="mb-4 text-center"><i class="bi bi-box-arrow-in-right"></i> Giriş Yap</h3>
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-person-fill"></i> Kullanıcı Adı</label>
+                <input type="text" name="username" class="form-control" placeholder="Kullanıcı adınızı girin" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label"><i class="bi bi-lock-fill"></i> Şifre</label>
+                <input type="password" name="password" class="form-control" placeholder="Şifrenizi girin" required />
+            </div>
+
+            @if (ViewBag.LoginError != null)
+            {
+                <div class="alert alert-danger py-1 px-2">@ViewBag.LoginError</div>
+            }
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-info text-white">
+                    <i class="bi bi-box-arrow-in-right"></i> Giriş Yap
+                </button>
+                <a asp-action="Register" class="btn btn-outline-light">
+                    <i class="bi bi-person-plus-fill"></i> Kayıt Ol
+                </a>
+            </div>
+        </form>
+    </div>
+</div>

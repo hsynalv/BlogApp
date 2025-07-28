@@ -1,0 +1,85 @@
+﻿@model IEnumerable<BlogApp.Models.Post>
+@{
+    ViewData["Title"] = "Anasayfa";
+    var categoriesWithCount = ViewBag.CategoriesWithCount as List<dynamic>;
+    int? selectedCategoryId = ViewBag.SelectedCategoryId;
+    string search = ViewBag.SearchQuery as string;
+}
+
+<div class="row mt-4">
+    <!-- Kategoriler - Sol Panel -->
+    <div class="col-md-3">
+        <h4 class="text-light">Kategoriler</h4>
+        <ul class="list-group">
+            <li class="list-group-item bg-dark @(selectedCategoryId == null ? "active" : "")">
+                <a class="d-block text-decoration-none @(selectedCategoryId == null ? "fw-bold text-primary" : "text-light")"
+                   href="@Url.Action("Index", "Home")">
+                    Tümü
+                </a>
+            </li>
+            @if (categoriesWithCount != null)
+            {
+                foreach (var item in categoriesWithCount)
+                {
+                    var category = item.Category;
+                    int count = item.Count;
+
+                    <li class="list-group-item bg-dark @(selectedCategoryId == category.Id ? "active" : "")">
+                        <a class="d-block text-decoration-none @(selectedCategoryId == category.Id ? "fw-bold text-primary" : "text-light")"
+                           href="@Url.Action("Index", new { categoryId = category.Id, search = search })">
+                            @category.Name (@count)
+                        </a>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+
+    <!-- Gönderiler - Sağ Panel -->
+    <div class="col-md-9">
+        <h5 class="text-light mb-3">Gönderiler</h5>
+
+        <!-- Arama Formu -->
+        <form method="get" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control bg-dark text-white border-secondary" placeholder="Başlığa göre ara" value="@search" />
+                @if (selectedCategoryId != null)
+                {
+                    <input type="hidden" name="categoryId" value="@selectedCategoryId" />
+                }
+                <button class="btn btn-outline-primary" type="submit">Ara</button>
+            </div>
+        </form>
+
+        @if (!Model.Any())
+        {
+            <div class="alert alert-secondary">Gösterilecek gönderi bulunamadı.</div>
+        }
+        else
+        {
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                @foreach (var post in Model)
+                {
+                    <div class="col">
+                        <div class="card bg-dark text-white h-100 shadow-sm border-secondary">
+                            <div class="card-body">
+                                <h5 class="card-title">@post.Title</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    @post.Category?.Name • @post.CreatedAt.ToString("dd.MM.yyyy")
+                                </h6>
+                                <p class="card-text">
+                                    @((post.Content?.Length ?? 0) > 150
+                                                                ? post.Content.Substring(0, 150) + "..."
+                                                                : post.Content)
+                        </p>
+                    </div>
+                    <div class="card-footer bg-transparent border-top border-secondary">
+                        <a href="@Url.Action("Details", "Home", new { id = post.Id })" class="btn btn-sm btn-outline-light">Devamını Oku</a>
+                    </div>
+                </div>
+            </div>
+                        }
+            </div>
+        }
+    </div>
+</div>
